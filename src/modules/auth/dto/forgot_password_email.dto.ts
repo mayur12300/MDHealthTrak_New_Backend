@@ -6,14 +6,6 @@ export class ForgotPasswordEmailDto {
   readonly userId?: string;
 
   @IsOptional()
-  @IsString()
-  readonly mobile?: string;
-
-  @IsOptional()
   @IsEmail()
   readonly email?: string;
-
-  @IsOptional()
-  @IsString()
-  readonly data?: string;
 }

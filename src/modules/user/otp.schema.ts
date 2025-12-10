@@ -1,12 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import * as mongoose from 'mongoose';
-import { User, UserSchema } from './user.schema';
+import { Document, Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Otp extends Document {
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-  user_id: User;
+  @Prop({ type: Types.ObjectId, required: true })
+  user_id: Types.ObjectId; // patient / doctor / family _id
 
   @Prop()
   mobile: string;
@@ -34,3 +32,27 @@ export class Otp extends Document {
 }
 
 export const OtpSchema = SchemaFactory.createForClass(Otp);
+
+// @Schema({ timestamps: true })
+// export class Otp {
+//   @Prop({ type: Types.ObjectId, required: true })
+//   user_id: Types.ObjectId; // patient / doctor / family _id
+
+//   @Prop()
+//   mobile?: string;
+
+//   @Prop()
+//   email?: string;
+
+//   @Prop()
+//   country_code?: string;
+
+//   @Prop({ required: true })
+//   otp: string;
+
+//   @Prop({ required: true })
+//   otp_expiry: Date;
+
+//   @Prop({ default: false })
+//   is_used: boolean;
+// }

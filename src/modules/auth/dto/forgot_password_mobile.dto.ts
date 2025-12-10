@@ -10,10 +10,6 @@ export class ForgotPasswordMobileDto {
   readonly mobile?: string;
 
   @IsOptional()
-  @IsEmail()
-  readonly email?: string;
-
-  @IsOptional()
   @IsString()
-  readonly data?: string;
+  country_code?: string;
 }

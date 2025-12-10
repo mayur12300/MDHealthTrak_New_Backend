@@ -43,14 +43,39 @@ export class AuthController {
     );
   }
 
-  @Post('login')
+  @Post('login/email')
   login(@Body() dto: dto.LoginDto, @Req() req: Request) {
     return this.service.login(dto, req);
+  }
+
+  @Post('send-otp-mobile')
+  async send_otp_mobile(@Body() dto: dto.SendOtpDto) {
+    return this.service.sendOtpMobile(dto);
+  }
+
+  @Post('login/otp')
+  async loginWithOtp(@Body() dto: dto.LoginVerifyOtpDto, @Req() req: Request) {
+    return this.service.verifyOtpAndLogin(dto, req);
   }
 
   @Post('logout')
   logout(@Body('session_id') sessionId: string) {
     return this.service.logout(sessionId);
+  }
+
+  @Post('forgot-password-mobile')
+  async forgot_password_mobile(@Body() payload: dto.ForgotPasswordMobileDto) {
+    return this.service.forgotPasswordMobile(payload);
+  }
+
+  @Post('forgot-password-email')
+  async forgot_password_email(@Body() payload: dto.ForgotPasswordEmailDto) {
+    return this.service.forgotPasswordEmail(payload);
+  }
+
+  @Post('reset-password')
+  async reset_password(@Body() payload: dto.ResetPasswordDto) {
+    return this.service.resetPassword(payload);
   }
 
   @Post('signup-set-password')
@@ -101,20 +126,5 @@ export class AuthController {
   @Post('login-apple')
   async login_apple(@Body() payload: dto.LoginAppleDto) {
     return this.service.login_apple(payload);
-  }
-
-  @Post('forgot-password-mobile')
-  async forgot_password_mobile(@Body() payload: dto.ForgotPasswordMobileDto) {
-    return this.service.forgot_password_mobile(payload);
-  }
-
-  @Post('forgot-password-email')
-  async forgot_password_email(@Body() payload: dto.ForgotPasswordEmailDto) {
-    return this.service.forgot_password_email(payload);
-  }
-
-  @Post('reset-password')
-  async reset_password(@Body() payload: dto.ResetPasswordDto) {
-    return this.service.reset_password(payload);
   }
 }

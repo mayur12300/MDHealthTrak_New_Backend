@@ -17,6 +17,13 @@ export class User {
     required: true,
     unique: true,
   })
+  user_id: string; // UUID
+
+  @Prop({
+    type: Types.ObjectId,
+    required: true,
+    unique: true,
+  })
   lookup_id: string; // UUID
 
   //User role

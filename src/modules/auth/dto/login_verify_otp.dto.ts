@@ -1,23 +1,27 @@
-import { IsOptional, IsString, IsEmail } from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  IsNotEmpty,
+  ValidateIf,
+  IsOptional,
+} from 'class-validator';
 
 export class LoginVerifyOtpDto {
-  @IsOptional()
+  @ValidateIf((o) => !o.email)
   @IsString()
-  readonly userId?: string;
-
-  @IsOptional()
-  @IsString()
+  @IsNotEmpty()
   readonly mobile?: string;
 
-  @IsOptional()
+  @ValidateIf((o) => !o.mobile)
   @IsEmail()
+  @IsNotEmpty()
   readonly email?: string;
 
-  @IsOptional()
   @IsString()
-  readonly otp?: string;
+  @IsNotEmpty()
+  readonly otp: string;
 
   @IsOptional()
   @IsString()
-  readonly data?: string;
+  readonly country_code?: string;
 }

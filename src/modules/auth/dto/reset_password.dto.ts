@@ -1,19 +1,45 @@
-import { IsOptional, IsString, IsEmail } from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  IsNotEmpty,
+  ValidateIf,
+  MinLength,
+} from 'class-validator';
 
 export class ResetPasswordDto {
-  @IsOptional()
+  // Require at least one identifier
+  @ValidateIf((o) => !o.email && !o.mobile)
   @IsString()
-  readonly userId?: string;
+  @IsNotEmpty()
+  readonly user_id?: string;
 
-  @IsOptional()
+  @ValidateIf((o) => !o.email && !o.mobile)
   @IsString()
+  @IsNotEmpty()
+  readonly lookup_id?: string;
+
+  @ValidateIf((o) => !o.email && !o.user_id)
+  @IsString()
+  @IsNotEmpty()
   readonly mobile?: string;
 
-  @IsOptional()
+  @ValidateIf((o) => !o.mobile && !o.user_id)
   @IsEmail()
+  @IsNotEmpty()
   readonly email?: string;
 
-  @IsOptional()
+  // OTP is mandatory
   @IsString()
-  readonly data?: string;
+  @IsNotEmpty()
+  readonly otp: string;
+
+  // Password rules
+  @IsString()
+  @MinLength(6)
+  readonly password: string;
+
+  // Must match password
+  @IsString()
+  @IsNotEmpty()
+  readonly confirm_password: string;
 }
