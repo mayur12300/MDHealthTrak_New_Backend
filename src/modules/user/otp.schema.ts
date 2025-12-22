@@ -3,8 +3,11 @@ import { Document, Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Otp extends Document {
-  @Prop({ type: Types.ObjectId, required: true })
-  user_id: Types.ObjectId; // patient / doctor / family _id
+  // @Prop({ type: Types.ObjectId, required: true })
+  // user_id: Types.ObjectId; // patient / doctor / family _id
+
+  @Prop()
+  user_id: string;
 
   @Prop()
   mobile: string;

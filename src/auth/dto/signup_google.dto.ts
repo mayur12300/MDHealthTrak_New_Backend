@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsEmail } from 'class-validator';
+import { IsOptional, IsString, IsEmail, IsNotEmpty, IsEnum } from 'class-validator';
 
 export class SignupGoogleDto {
   @IsOptional()
@@ -16,4 +16,12 @@ export class SignupGoogleDto {
   @IsOptional()
   @IsString()
   readonly data?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly idToken?: string;
+
+  @IsEnum(['patient', 'family', 'doctor'])
+  role: 'patient' | 'family' | 'doctor';
+
 }

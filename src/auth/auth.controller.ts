@@ -32,16 +32,10 @@ export class AuthController {
     );
   }
 
-  @Post('signup')
-  signup(@Body() dto: dto.SignupDto) {
-    return this.service.signup(
-      dto.role,
-      dto.mobile,
-      dto.email,
-      dto.password,
-      dto.confirm_password,
-    );
-  }
+@Post('signup')
+signup(@Body() dto: dto.SignupDto, @Req() req: Request) {
+  return this.service.signup(dto, req);
+}
 
   @Post('login/email')
   login(@Body() dto: dto.LoginDto, @Req() req: Request) {
@@ -53,7 +47,7 @@ export class AuthController {
     return this.service.sendOtpMobile(dto);
   }
 
-  @Post('login/otp')
+  @Post('login-otp')
   async loginWithOtp(@Body() dto: dto.LoginVerifyOtpDto, @Req() req: Request) {
     return this.service.verifyOtpAndLogin(dto, req);
   }
@@ -84,9 +78,17 @@ export class AuthController {
   }
 
   @Post('signup-google')
-  async signup_google(@Body() payload: dto.SignupGoogleDto) {
-    return this.service.signup_google(payload);
-  }
+async signup_google(@Body() payload: dto.SignupGoogleDto) {
+  const { idToken, role } = payload;
+  return this.service.signup_google(idToken, role);
+}
+
+  @Post('login-google')
+async login_google(@Body() payload: dto.LoginGoogleDto) {
+  const { idToken, role } = payload;
+  return this.service.login_google(idToken, role);
+}
+
 
   @Post('signup-facebook')
   async signup_facebook(@Body() payload: dto.SignupFacebookDto) {
@@ -111,11 +113,6 @@ export class AuthController {
   @Post('login-email-password')
   async login_email_password(@Body() payload: dto.LoginEmailPasswordDto) {
     return this.service.login_email_password(payload);
-  }
-
-  @Post('login-google')
-  async login_google(@Body() payload: dto.LoginGoogleDto) {
-    return this.service.login_google(payload);
   }
 
   @Post('login-facebook')

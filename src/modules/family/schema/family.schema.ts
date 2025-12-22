@@ -162,6 +162,32 @@ export class Family {
 
   @Prop()
   userId: string;
+
+  @Prop({
+  type: {
+    provider: {
+      type: String,
+      enum: ['google', 'facebook', 'apple'],
+    },
+    providerId: String,
+    email: String,
+    name: String,
+    avatar: String,
+    emailVerified: Boolean,
+  },
+})
+socialAuth?: {
+  provider?: 'google' | 'facebook' | 'apple';
+  providerId?: string;
+  email?: string;
+  name?: string;
+  avatar?: string;
+  emailVerified?: boolean;
+};
+
+@Prop({ default: false })
+isSocialLogin: boolean;
+
 }
 
 export const FamilySchema = SchemaFactory.createForClass(Family);

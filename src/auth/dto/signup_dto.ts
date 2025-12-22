@@ -61,4 +61,8 @@ export class SignupDto {
   @IsString()
   @IsNotEmpty()
   confirm_password: string;
+  
+@IsString()
+  @IsNotEmpty()
+  country_code: string;
 }
