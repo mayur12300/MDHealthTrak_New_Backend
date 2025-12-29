@@ -1067,7 +1067,7 @@ async login_google(
     },
   );
 
-  // ✅ Tokens + Session (single source of truth)
+  // Tokens + Session (single source of truth)
   const authData = await this.generateTokensAndSession(
     user,
     user,
