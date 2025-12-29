@@ -77,23 +77,50 @@ signup(@Body() dto: dto.SignupDto, @Req() req: Request) {
     return this.service.signup_set_password(payload);
   }
 
-  @Post('signup-google')
-async signup_google(@Body() payload: dto.SignupGoogleDto) {
+//   @Post('signup-google')
+// async signup_google(@Body() payload: dto.SignupGoogleDto) {
+//   const { idToken, role } = payload;
+//   return this.service.signup_google(idToken, role);
+// }
+
+
+@Post('signup-google')
+async signup_google(
+  @Body() payload: dto.SignupGoogleDto,
+  @Req() req: Request,
+) {
   const { idToken, role } = payload;
-  return this.service.signup_google(idToken, role);
+  return this.service.signup_google(idToken, role, req);
 }
 
-  @Post('login-google')
-async login_google(@Body() payload: dto.LoginGoogleDto) {
+
+@Post('login-google')
+async loginGoogle(
+  @Body() payload: dto.LoginGoogleDto,
+  @Req() req: Request,
+) {
   const { idToken, role } = payload;
-  return this.service.login_google(idToken, role);
+  return this.service.login_google(idToken, role, req);
 }
 
+  @Post('facebook/signup')
+signupFacebook(
+  @Body('accessToken') accessToken: string,
+  @Body('role') role: dto.UserRole,
+  @Req() req: Request,
+) {
+  return this.service.signup_facebook(accessToken, role, req);
+}
 
-  @Post('signup-facebook')
-  async signup_facebook(@Body() payload: dto.SignupFacebookDto) {
-    return this.service.signup_facebook(payload);
-  }
+@Post('facebook/login')
+loginFacebook(
+  @Body('accessToken') accessToken: string,
+  @Body('role') role: dto.UserRole,
+  @Req() req: Request,
+) {
+  return this.service.login_facebook(accessToken, role, req);
+}
+
 
   @Post('signup-apple')
   async signup_apple(@Body() payload: dto.SignupAppleDto) {
@@ -113,11 +140,6 @@ async login_google(@Body() payload: dto.LoginGoogleDto) {
   @Post('login-email-password')
   async login_email_password(@Body() payload: dto.LoginEmailPasswordDto) {
     return this.service.login_email_password(payload);
-  }
-
-  @Post('login-facebook')
-  async login_facebook(@Body() payload: dto.LoginFacebookDto) {
-    return this.service.login_facebook(payload);
   }
 
   @Post('login-apple')
