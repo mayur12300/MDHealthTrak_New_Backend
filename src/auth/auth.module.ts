@@ -3,13 +3,16 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 // import { User, UserSchema } from '../user/user.schema';
-import { User, UserSchema } from '../modules/user/user.schema'
+import { User, UserSchema } from '../modules/user/user.schema';
 import { Otp, OtpSchema } from '../modules/user/otp.schema';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { SessionsModule } from '../modules/sessions/sessions.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Doctor, DoctorSchema } from '../modules/doctor/schema/doctor.schema';
-import { Patient, PatientSchema } from '../modules/patient/schema/patient.schema';
+import {
+  Patient,
+  PatientSchema,
+} from '../modules/patient/schema/patient.schema';
 import { Family, FamilySchema } from '../modules/family/schema/family.schema';
 
 @Module({

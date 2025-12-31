@@ -1,11 +1,17 @@
-import { IsEmail, IsOptional, IsString, MinLength, ValidateIf } from 'class-validator';
+import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  MinLength,
+  ValidateIf,
+} from 'class-validator';
 
 export class GenerateTokenDto {
-  @ValidateIf(o => !o.mobile)
+  @ValidateIf((o) => !o.mobile)
   @IsEmail()
   email?: string;
 
-  @ValidateIf(o => !o.email)
+  @ValidateIf((o) => !o.email)
   @IsString()
   mobile?: string;
 

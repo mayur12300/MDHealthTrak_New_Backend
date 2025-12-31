@@ -32,10 +32,10 @@ export class AuthController {
     );
   }
 
-@Post('signup')
-signup(@Body() dto: dto.SignupDto, @Req() req: Request) {
-  return this.service.signup(dto, req);
-}
+  @Post('signup')
+  signup(@Body() dto: dto.SignupDto, @Req() req: Request) {
+    return this.service.signup(dto, req);
+  }
 
   @Post('login/email')
   login(@Body() dto: dto.LoginDto, @Req() req: Request) {
@@ -77,75 +77,56 @@ signup(@Body() dto: dto.SignupDto, @Req() req: Request) {
     return this.service.signup_set_password(payload);
   }
 
-//   @Post('signup-google')
-// async signup_google(@Body() payload: dto.SignupGoogleDto) {
-//   const { idToken, role } = payload;
-//   return this.service.signup_google(idToken, role);
-// }
+  @Post('signup-google')
+  async signup_google(
+    @Body() payload: dto.SignupGoogleDto,
+    @Req() req: Request,
+  ) {
+    const { idToken, role } = payload;
+    return this.service.signup_google(idToken, role, req);
+  }
 
-
-@Post('signup-google')
-async signup_google(
-  @Body() payload: dto.SignupGoogleDto,
-  @Req() req: Request,
-) {
-  const { idToken, role } = payload;
-  return this.service.signup_google(idToken, role, req);
-}
-
-
-@Post('login-google')
-async loginGoogle(
-  @Body() payload: dto.LoginGoogleDto,
-  @Req() req: Request,
-) {
-  const { idToken, role } = payload;
-  return this.service.login_google(idToken, role, req);
-}
+  @Post('login-google')
+  async loginGoogle(@Body() payload: dto.LoginGoogleDto, @Req() req: Request) {
+    const { idToken, role } = payload;
+    return this.service.login_google(idToken, role, req);
+  }
 
   @Post('facebook/signup')
-signupFacebook(
-  @Body('accessToken') accessToken: string,
-  @Body('role') role: dto.UserRole,
-  @Req() req: Request,
-) {
-  return this.service.signup_facebook(accessToken, role, req);
-}
+  signupFacebook(
+    @Body('accessToken') accessToken: string,
+    @Body('role') role: dto.UserRole,
+    @Req() req: Request,
+  ) {
+    return this.service.signup_facebook(accessToken, role, req);
+  }
 
-@Post('facebook/login')
-loginFacebook(
-  @Body('accessToken') accessToken: string,
-  @Body('role') role: dto.UserRole,
-  @Req() req: Request,
-) {
-  return this.service.login_facebook(accessToken, role, req);
-}
+  @Post('facebook/login')
+  loginFacebook(
+    @Body('accessToken') accessToken: string,
+    @Body('role') role: dto.UserRole,
+    @Req() req: Request,
+  ) {
+    return this.service.login_facebook(accessToken, role, req);
+  }
 
-@Post('signup-apple')
-async signup_apple(
-  @Body() payload: dto.SignupAppleDto,
-   @Body('role') role: dto.UserRole,
-  @Req() req: Request,
-) {
-  return this.service.signup_apple(
-    payload.idToken,
-    role,
-    req,
-  );
-}
+  @Post('signup-apple')
+  async signup_apple(
+    @Body() payload: dto.SignupAppleDto,
+    @Body('role') role: dto.UserRole,
+    @Req() req: Request,
+  ) {
+    return this.service.signup_apple(payload.idToken, role, req);
+  }
 
-@Post('login-apple')
-async login_apple(
-  @Body() payload: dto.LoginAppleDto,
-   @Body('role') role: dto.UserRole,
-  @Req() req: Request,
-) {
-  return this.service.login_apple(
-    payload.idToken,
-    role,
-    req,
-  );
-}
+  @Post('login-apple')
+  async login_apple(
+    @Body() payload: dto.LoginAppleDto,
+    @Body('role') role: dto.UserRole,
+    @Req() req: Request,
+  ) {
+    return this.service.login_apple(payload.idToken, role, req);
+  }
 
   @Post('login-send-otp')
   async login_send_otp(@Body() payload: dto.LoginSendOtpDto) {
@@ -161,6 +142,4 @@ async login_apple(
   async login_email_password(@Body() payload: dto.LoginEmailPasswordDto) {
     return this.service.login_email_password(payload);
   }
-
-
 }

@@ -180,30 +180,29 @@ export class Patient extends Document {
   appleId: string;
 
   @Prop({
-  type: {
-    provider: {
-      type: String,
-      enum: ['google', 'facebook', 'apple'],
+    type: {
+      provider: {
+        type: String,
+        enum: ['google', 'facebook', 'apple'],
+      },
+      providerId: String,
+      email: String,
+      name: String,
+      avatar: String,
+      emailVerified: Boolean,
     },
-    providerId: String,
-    email: String,
-    name: String,
-    avatar: String,
-    emailVerified: Boolean,
-  },
-})
-socialAuth?: {
-  provider?: 'google' | 'facebook' | 'apple';
-  providerId?: string;
-  email?: string;
-  name?: string;
-  avatar?: string;
-  emailVerified?: boolean;
-};
+  })
+  socialAuth?: {
+    provider?: 'google' | 'facebook' | 'apple';
+    providerId?: string;
+    email?: string;
+    name?: string;
+    avatar?: string;
+    emailVerified?: boolean;
+  };
 
-@Prop({ default: false })
-isSocialLogin: boolean;
-
+  @Prop({ default: false })
+  isSocialLogin: boolean;
 }
 
 export const PatientSchema = SchemaFactory.createForClass(Patient);

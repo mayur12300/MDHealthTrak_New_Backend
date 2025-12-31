@@ -27,16 +27,12 @@ export async function verifyGoogleToken(idToken: string) {
 
 export async function verifyFacebookToken(accessToken: string) {
   try {
-
-      const debugRes = await axios.get(
-      'https://graph.facebook.com/debug_token',
-      {
-        params: {
-          input_token: accessToken,
-          access_token: `${process.env.FB_APP_ID}|${process.env.FB_APP_SECRET}`,
-        },
+    const debugRes = await axios.get('https://graph.facebook.com/debug_token', {
+      params: {
+        input_token: accessToken,
+        access_token: `${process.env.FB_APP_ID}|${process.env.FB_APP_SECRET}`,
       },
-    );
+    });
 
     const debugData = debugRes.data?.data;
 
@@ -44,15 +40,12 @@ export async function verifyFacebookToken(accessToken: string) {
       throw new BadRequestException('Invalid Facebook token');
     }
 
-    const { data } = await axios.get(
-      'https://graph.facebook.com/me',
-      {
-        params: {
-          access_token: accessToken,
-          fields: 'id,name,email,picture.type(large)',
-        },
+    const { data } = await axios.get('https://graph.facebook.com/me', {
+      params: {
+        access_token: accessToken,
+        fields: 'id,name,email,picture.type(large)',
       },
-    );
+    });
 
     if (!data?.id) {
       throw new BadRequestException('Invalid Facebook token');
@@ -70,23 +63,17 @@ export async function verifyFacebookToken(accessToken: string) {
       err.response?.data || err.message,
     );
 
-    throw new BadRequestException(
-      'Invalid or expired Facebook access token',
-    );
+    throw new BadRequestException('Invalid or expired Facebook access token');
   }
 }
 
 export async function verifyAppleToken(idToken: string) {
-  const appleKeys = await axios.get(
-    'https://appleid.apple.com/auth/keys',
-  );
+  const appleKeys = await axios.get('https://appleid.apple.com/auth/keys');
 
   const decoded: any = jwt.decode(idToken, { complete: true });
   if (!decoded) throw new Error('Invalid Apple token');
 
-  const key = appleKeys.data.keys.find(
-    (k) => k.kid === decoded.header.kid,
-  );
+  const key = appleKeys.data.keys.find((k) => k.kid === decoded.header.kid);
 
   if (!key) throw new Error('Apple public key not found');
 

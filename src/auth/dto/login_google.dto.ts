@@ -1,4 +1,10 @@
-import { IsOptional, IsString, IsEmail, IsNotEmpty, IsEnum } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsEmail,
+  IsNotEmpty,
+  IsEnum,
+} from 'class-validator';
 
 export class LoginGoogleDto {
   @IsOptional()
