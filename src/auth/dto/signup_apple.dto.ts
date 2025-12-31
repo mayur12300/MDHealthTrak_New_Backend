@@ -15,5 +15,5 @@ export class SignupAppleDto {
 
   @IsOptional()
   @IsString()
-  readonly data?: string;
+  readonly idToken?: string;
 }

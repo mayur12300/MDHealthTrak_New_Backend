@@ -28,7 +28,7 @@ import { Doctor, DoctorDocument } from '../modules/doctor/schema/doctor.schema';
 import { Patient } from '../modules/patient/schema/patient.schema';
 import type { StringValue } from 'ms';
 import { v4 as uuidv4 } from 'uuid';
-import { verifyFacebookToken, verifyGoogleToken } from 'src/config/socialmedia.config';
+import { verifyAppleToken, verifyFacebookToken, verifyGoogleToken } from 'src/config/socialmedia.config';
 
 @Injectable()
 export class AuthService {
@@ -830,86 +830,6 @@ async signup(dto: SignupDto, req: Request) {
     return { success: true, api: 'signup-set-password', payload };
   }
 
-//  async signup_google(idToken: string, role: 'patient' | 'family' | 'doctor') {
-//   const payload = await verifyGoogleToken(idToken);
-//   console.log(payload, "verifyGoogleToken")
-
-//   if (!payload?.email_verified) {
-//     throw new UnauthorizedException('Google email not verified');
-//   }
-
-//   const { email, sub, name, picture } = payload;
-//   const lookupId = uuidv4();
-
-//   let model;
-
-//   // Choose correct model
-//   switch (role) {
-//     case 'patient':
-//       model = this.patientModel;
-//       break;
-//     case 'family':
-//       model = this.familyModel;
-//       break;
-//     case 'doctor':
-//       model = this.doctorModel;
-//       break;
-//     default:
-//       throw new BadRequestException('Invalid role');
-//   }
-
-//   // Check existing user (any role)
-//   let user =
-//     (await this.patientModel.findOne({ email })) ||
-//     (await this.familyModel.findOne({ email })) ||
-//     (await this.doctorModel.findOne({ email }));
-
-//   // Email already registered with different role
-//   if (user && user.role !== role) {
-//     throw new BadRequestException(
-//       `Email already registered as ${user.role}`,
-//     );
-//   }
-
-//   // Create user
-//   if (!user) {
-//     user = await model.create({
-//       lookup_id: lookupId,
-//       email,
-//       name,
-//       image: picture,
-//       role,
-
-//       // Unified social auth
-//       socialAuth: {
-//         provider: 'google',
-//         providerId: sub,
-//         email,
-//         name,
-//         avatar: picture,
-//         emailVerified: payload.email_verified,
-//       },
-
-//       isSocialLogin: true,
-//       active: 1,
-//       status: 1,
-//     });
-//   }
-
-//   // Generate tokens
-//   const tokens = this.authService.generateTokens(user._id.toString());
-//    await this.generateTokensAndSession(account, account, req);
-
-//   console.log(tokens);
-
-//   return {
-//     message: 'Google signup successful',
-//     user,
-//     ...tokens,
-//   };
-// }
-
-
 async signup_google(
   idToken: string,
   role: 'patient' | 'family' | 'doctor',
@@ -986,8 +906,6 @@ async signup_google(
     ...authData,
   };
 }
-
-
 
 
 async login_google(
@@ -1080,95 +998,6 @@ async login_google(
     ...authData,
   };
 }
-
-// async login_google(
-//   idToken: string,
-//   role: 'patient' | 'family' | 'doctor',
-// ) {
-//   const payload = await verifyGoogleToken(idToken);
-
-//   if (!payload?.email_verified) {
-//     throw new UnauthorizedException('Google email not verified');
-//   }
-
-//   const { email, sub, name, picture } = payload;
-
-//   let model;
-
-//   switch (role) {
-//     case 'patient':
-//       model = this.patientModel;
-//       break;
-//     case 'family':
-//       model = this.familyModel;
-//       break;
-//     case 'doctor':
-//       model = this.doctorModel;
-//       break;
-//     default:
-//       throw new BadRequestException('Invalid role');
-//   }
-
-//   // Find existing user
-//   const user = await model.findOne({
-//     $or: [
-//       { email },
-//       { 'socialAuth.providerId': sub },
-//       { googleId: sub }, // legacy support
-//     ],
-//   });
-
-//   if (!user) {
-//     throw new NotFoundException(
-//       'Account not found. Please sign up first.',
-//     );
-//   }
-
-//   // Prevent wrong role login
-//   if (user.role !== role) {
-//     throw new UnauthorizedException(
-//       `Account registered as ${user.role}`,
-//     );
-//   }
-
-//   // Update social auth if missing
-//   if (!user.socialAuth?.providerId) {
-//     user.socialAuth = {
-//       provider: 'google',
-//       providerId: sub,
-//       email,
-//       name,
-//       avatar: picture,
-//       emailVerified: payload.email_verified,
-//     };
-//     user.isSocialLogin = true;
-//     await user.save();
-//   }
-
-//   // Update login metadata
-//   await model.updateOne(
-//     { _id: user._id },
-//     {
-//       $inc: { loginCount: 1 },
-//       $set: {
-//         device_token: null,
-//         device_type: null,
-//       },
-//     },
-//   );
-
-//   // Generate tokens
-//   const tokens = this.authService.generateTokens(
-//     user._id.toString(),
-//   );
-
-//   return {
-//     message: 'Google login successful',
-//     user,
-//     ...tokens,
-//   };
-// }
-
 
   async signup_facebook(
   accessToken: string,
@@ -1317,12 +1146,160 @@ async login_facebook(
   };
 }
 
+async signup_apple(
+  idToken: string,
+  role: 'patient' | 'family' | 'doctor',
+  req: Request,
+) {
+  const payload = await verifyAppleToken(idToken);
 
+  const { email, sub } = payload;
+  const name =
+    payload.name?.firstName && payload.name?.lastName
+      ? `${payload.name.firstName} ${payload.name.lastName}`
+      : null;
 
-  async signup_apple(payload: any) {
-    // TODO: Implement signup-apple business logic
-    return { success: true, api: 'signup-apple', payload };
+  if (!email) {
+    throw new BadRequestException(
+      'Apple email not available. Try login.',
+    );
   }
+
+  let model;
+  switch (role) {
+    case 'patient':
+      model = this.patientModel;
+      break;
+    case 'family':
+      model = this.familyModel;
+      break;
+    case 'doctor':
+      model = this.doctorModel;
+      break;
+    default:
+      throw new BadRequestException('Invalid role');
+  }
+
+  // Cross-role email check
+  let user =
+    (await this.patientModel.findOne({ email })) ||
+    (await this.familyModel.findOne({ email })) ||
+    (await this.doctorModel.findOne({ email }));
+
+  if (user && user.role !== role) {
+    throw new BadRequestException(
+      `Email already registered as ${user.role}`,
+    );
+  }
+
+  if (!user) {
+    user = await model.create({
+      lookup_id: uuidv4(),
+      email,
+      name,
+      role,
+      isSocialLogin: true,
+      socialAuth: {
+        provider: 'apple',
+        providerId: sub,
+        email,
+        emailVerified: true,
+      },
+      active: 1,
+      status: 1,
+    });
+  }
+
+  const authData = await this.generateTokensAndSession(
+    user,
+    user,
+    req,
+  );
+
+  return {
+    message: 'Apple signup successful',
+    user,
+    ...authData,
+  };
+}
+
+async login_apple(
+  idToken: string,
+  role: 'patient' | 'family' | 'doctor',
+  req: Request,
+) {
+  const payload = await verifyAppleToken(idToken);
+
+  const { email, sub } = payload;
+
+  let model;
+  switch (role) {
+    case 'patient':
+      model = this.patientModel;
+      break;
+    case 'family':
+      model = this.familyModel;
+      break;
+    case 'doctor':
+      model = this.doctorModel;
+      break;
+    default:
+      throw new BadRequestException('Invalid role');
+  }
+
+  const user = await model.findOne({
+    $or: [
+      { email },
+      { 'socialAuth.providerId': sub },
+      { appleId: sub }, // legacy
+    ],
+  });
+
+  if (!user) {
+    throw new NotFoundException(
+      'Account not found. Please sign up first.',
+    );
+  }
+
+  if (user.role !== role) {
+    throw new UnauthorizedException(
+      `Account registered as ${user.role}`,
+    );
+  }
+
+  // Sync Apple auth if missing
+  if (!user.socialAuth?.providerId) {
+    user.socialAuth = {
+      provider: 'apple',
+      providerId: sub,
+      email: user.email,
+      emailVerified: true,
+    };
+    user.isSocialLogin = true;
+    await user.save();
+  }
+
+  await model.updateOne(
+    { _id: user._id },
+    {
+      $inc: { loginCount: 1 },
+      $set: { lastLoginAt: new Date() },
+    },
+  );
+
+  const authData = await this.generateTokensAndSession(
+    user,
+    user,
+    req,
+  );
+
+  return {
+    message: 'Apple login successful',
+    user,
+    ...authData,
+  };
+}
+
 
   async login_send_otp(payload: any) {
     // TODO: Implement login-send-otp business logic
@@ -1337,11 +1314,6 @@ async login_facebook(
   async login_email_password(payload: any) {
     // TODO: Implement login-email-password business logic
     return { success: true, api: 'login-email-password', payload };
-  }
-
-  async login_apple(payload: any) {
-    // TODO: Implement login-apple business logic
-    return { success: true, api: 'login-apple', payload };
   }
 
 async forgotPasswordMobile(dto: ForgotPasswordMobileDto) {
@@ -1396,7 +1368,7 @@ async forgotPasswordEmail(dto: ForgotPasswordEmailDto) {
   const otp = Math.floor(1000 + Math.random() * 9000).toString();
 
   await this.otpModel.findOneAndUpdate(
-    { user_id: user._id }, // ✅ correct mapping
+    { user_id: user._id }, // correct mapping
     {
       user_id: user._id,
       email,

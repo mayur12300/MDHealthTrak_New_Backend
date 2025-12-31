@@ -15,5 +15,5 @@ export class LoginAppleDto {
 
   @IsOptional()
   @IsString()
-  readonly data?: string;
+  readonly idToken?: string;
 }

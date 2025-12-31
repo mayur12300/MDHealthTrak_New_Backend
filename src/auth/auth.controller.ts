@@ -121,11 +121,31 @@ loginFacebook(
   return this.service.login_facebook(accessToken, role, req);
 }
 
+@Post('signup-apple')
+async signup_apple(
+  @Body() payload: dto.SignupAppleDto,
+   @Body('role') role: dto.UserRole,
+  @Req() req: Request,
+) {
+  return this.service.signup_apple(
+    payload.idToken,
+    role,
+    req,
+  );
+}
 
-  @Post('signup-apple')
-  async signup_apple(@Body() payload: dto.SignupAppleDto) {
-    return this.service.signup_apple(payload);
-  }
+@Post('login-apple')
+async login_apple(
+  @Body() payload: dto.LoginAppleDto,
+   @Body('role') role: dto.UserRole,
+  @Req() req: Request,
+) {
+  return this.service.login_apple(
+    payload.idToken,
+    role,
+    req,
+  );
+}
 
   @Post('login-send-otp')
   async login_send_otp(@Body() payload: dto.LoginSendOtpDto) {
@@ -142,8 +162,5 @@ loginFacebook(
     return this.service.login_email_password(payload);
   }
 
-  @Post('login-apple')
-  async login_apple(@Body() payload: dto.LoginAppleDto) {
-    return this.service.login_apple(payload);
-  }
+
 }
